@@ -12,10 +12,16 @@ namespace Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            string connectionString = @"(localdb)\\MSSQLLocalDB; Initial Catalog = SamuraiAppDB";
+            string connectionString = @"Data Source=DESKTOP-0IO1BPV\SQLEXPRESS;Initial Catalog=SamuraiApp;Integrated Security=True";
             
             optionsBuilder.UseSqlServer(connectionString);
 
         }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<SamuraiBattle>().HasKey(k => new { k.SamuraiId, k.BattleId });
+        }
+
     }
 }
