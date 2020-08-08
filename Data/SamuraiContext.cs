@@ -1,5 +1,6 @@
 ﻿using Domain;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 
 namespace Data
@@ -11,12 +12,21 @@ namespace Data
         public DbSet<Clan> Clans { get; set; }
         public DbSet<Battle> Battles { get; set; }
 
+        public static readonly ILoggerFactory ConsoleLoggerFactory = 
+            LoggerFactory.Create( builder =>
+            {
+                builder.AddFilter((category, level) 
+                                                    => category == DbLoggerCategory.Database.Command.Name
+                                                    && level == LogLevel.Information)
+                       .AddConsole();
+            });
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            string connectionString = @"Data Source=DESKTOP-0IO1BPV\SQLEXPRESS;Initial Catalog=SamuraiApp;Integrated Security=True";
+            string connectionString = @"Data Source=DESKTOP-IP9GKPT\SQLEXPRESS;Initial Catalog=SamuraiApp;Integrated Security=True";
             
-            optionsBuilder.UseSqlServer(connectionString);
+            optionsBuilder.UseLoggerFactory(ConsoleLoggerFactory)
+                          .UseSqlServer(connectionString);
 
         }
 
